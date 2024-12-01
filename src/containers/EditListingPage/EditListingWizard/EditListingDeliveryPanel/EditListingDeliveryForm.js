@@ -16,7 +16,7 @@ import {
   composeValidators,
   required,
 } from '../../../../util/validators';
-import { PACKAGE_SIZES } from '../util/shipping';
+
 // Import shared components
 import {
   Form,
@@ -58,16 +58,6 @@ export const EditListingDeliveryFormComponent = props => (
         values,
       } = formRenderProps;
 
-      // This is a bug fix for Final Form.
-      // Without this, React will return a warning:
-      //   "Cannot update a component (`ForwardRef(Field)`)
-      //   while rendering a different component (`ForwardRef(Field)`)"
-      // This seems to happen because validation calls listeneres and
-      // that causes state to change inside final-form.
-      // https://github.com/final-form/react-final-form/issues/751
-      //
-      // TODO: it might not be worth the trouble to show these fields as disabled,
-      // if this fix causes trouble in future dependency updates.
       const { pauseValidation, resumeValidation } = form;
       pauseValidation(false);
       useEffect(() => resumeValidation(), [values]);
@@ -159,12 +149,6 @@ export const EditListingDeliveryFormComponent = props => (
                   : () => {}
               }
               hideErrorMessage={!pickupEnabled}
-              // Whatever parameters are being used to calculate
-              // the validation function need to be combined in such
-              // a way that, when they change, this key prop
-              // changes, thus reregistering this field (and its
-              // validation function) with Final Form.
-              // See example: https://codesandbox.io/s/changing-field-level-validators-zc8ei
               key={pickupEnabled ? 'locationValidation' : 'noLocationValidation'}
             />
 
@@ -219,12 +203,6 @@ export const EditListingDeliveryFormComponent = props => (
                   : null
               }
               hideErrorMessage={!shippingEnabled}
-              // Whatever parameters are being used to calculate
-              // the validation function need to be combined in such
-              // a way that, when they change, this key prop
-              // changes, thus reregistering this field (and its
-              // validation function) with Final Form.
-              // See example: https://codesandbox.io/s/changing-field-level-validators-zc8ei
               key={shippingEnabled ? 'oneItemValidation' : 'noOneItemValidation'}
             />
 
@@ -242,16 +220,7 @@ export const EditListingDeliveryFormComponent = props => (
                 })}
                 placeholder={intl.formatMessage({
                   id: 'EditListingDeliveryForm.shippingAdditionalItemsPlaceholder',
-               <FieldSelect
-              id={formId ? `${formId}.packageSize` : 'packageSize'}
-              name="packageSize"
-              className={css.input}
-              label={intl.formatMessage({
-                id: 'EditListingDeliveryForm.packageSizeLabel',
-              })}
-              disabled={!shippingEnabled}
-              validate={
-                shippingEnabled })}
+                })}
                 currencyConfig={currencyConfig}
                 disabled={!shippingEnabled}
                 validate={
@@ -264,15 +233,34 @@ export const EditListingDeliveryFormComponent = props => (
                     : null
                 }
                 hideErrorMessage={!shippingEnabled}
-                // Whatever parameters are being used to calculate
-                // the validation function need to be combined in such
-                // a way that, when they change, this key prop
-                // changes, thus reregistering this field (and its
-                // validation function) with Final Form.
-                // See example: https://codesandbox.io/s/changing-field-level-validators-zc8ei
                 key={shippingEnabled ? 'additionalItemsValidation' : 'noAdditionalItemsValidation'}
               />
             ) : null}
+
+            <FieldSelect
+              id={formId ? `${formId}.packageSize` : 'packageSize'}
+              name="packageSize"
+              className={css.input}
+              label={intl.formatMessage({
+                id: 'EditListingDeliveryForm.packageSizeLabel',
+              })}
+              disabled={!shippingEnabled}
+              validate={
+                shippingEnabled
+                  ? required(
+                      intl.formatMessage({
+                        id: 'EditListingDeliveryForm.packageSizeRequired',
+                      })
+                    )
+                  : null
+              }
+            >
+              {Object.entries(SHIPPING_PACKAGE_SIZES).map(([key, value]) => (
+                <option key={key} value={key}>
+                  {value.display_name}
+                </option>
+              ))}
+            </FieldSelect>
           </div>
 
           <Button
