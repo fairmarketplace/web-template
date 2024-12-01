@@ -4,6 +4,7 @@
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {
+    "shippo": "^1.7.1",
     "@babel/runtime": "^7.17.9",
     "@loadable/component": "^5.16.4",
     "@loadable/server": "^5.16.5",
@@ -93,6 +94,8 @@
     }
   },
   "scripts": {
+     "shipping-server": "node shipping-server.js",
+    "dev-all": "concurrently \"yarn dev\" \"yarn shipping-server\"",
     "audit": "yarn audit --json | node scripts/audit.js",
     "clean": "rm -rf build/*",
     "config": "node scripts/config.js",
