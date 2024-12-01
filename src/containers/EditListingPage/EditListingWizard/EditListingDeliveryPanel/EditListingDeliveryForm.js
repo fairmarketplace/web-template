@@ -1,3 +1,4 @@
+import { PACKAGE_SIZES } from '../util/shipping';
 import React, { useEffect } from 'react';
 import { bool, func, shape, string } from 'prop-types';
 import { compose } from 'redux';
@@ -15,7 +16,7 @@ import {
   composeValidators,
   required,
 } from '../../../../util/validators';
-
+import { PACKAGE_SIZES } from '../util/shipping';
 // Import shared components
 import {
   Form,
@@ -24,6 +25,7 @@ import {
   FieldCurrencyInput,
   FieldTextInput,
   FieldCheckbox,
+  FieldSelect,
 } from '../../../../components';
 
 // Import modules from this directory
@@ -240,7 +242,16 @@ export const EditListingDeliveryFormComponent = props => (
                 })}
                 placeholder={intl.formatMessage({
                   id: 'EditListingDeliveryForm.shippingAdditionalItemsPlaceholder',
-                })}
+               <FieldSelect
+              id={formId ? `${formId}.packageSize` : 'packageSize'}
+              name="packageSize"
+              className={css.input}
+              label={intl.formatMessage({
+                id: 'EditListingDeliveryForm.packageSizeLabel',
+              })}
+              disabled={!shippingEnabled}
+              validate={
+                shippingEnabled })}
                 currencyConfig={currencyConfig}
                 disabled={!shippingEnabled}
                 validate={
