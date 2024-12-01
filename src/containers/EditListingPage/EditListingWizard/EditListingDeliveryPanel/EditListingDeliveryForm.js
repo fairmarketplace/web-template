@@ -1,4 +1,4 @@
-import { PACKAGE_SIZES as SHIPPING_PACKAGE_SIZES } from '../util/shipping';
+import { PACKAGE_SIZES as SHIPPING_PACKAGE_SIZES } from '../../../../util/shipping';
 import React, { useEffect } from 'react';
 import { bool, func, shape, string } from 'prop-types';
 import { compose } from 'redux';
